@@ -35,8 +35,8 @@ void reset_board();
 void input(SDL_Event event);
 Tetromino gen_mino();
 void fill_bag();
-void check_mino_bounds();
-bool check_mino_colission();
+bool check_place_mino();
+void check_mino_colission();
 void place_mino();
 int clear_lines();
 void update_board();
@@ -45,5 +45,6 @@ void render_board(SDL_Renderer *renderer);
 void render_tetromino(SDL_Renderer *renderer);
 void debug_board();
 void debug_mino();
+void debug_bag(); 
 
 #endif // GAME_H

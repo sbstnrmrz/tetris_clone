@@ -42,9 +42,6 @@ const float level[30] = {800.0f,      // LEVEL 0  FRAMES 48
                          33.333333f,  // LEVEL 28 FRAMES 2
                          16.666666f}; // LEVEL 29 FRAMES 1
 
-
-
-
 const Tetromino shapes[7] = {(Tetromino){{2, 2, 2, 2}, {0+3, 1+3, 2+3, 3+3}, I, CYAN},
                              (Tetromino){{1, 1, 2, 2}, {1+3, 2+3, 1+3, 2+3}, O, YELLOW},
                              (Tetromino){{1, 2, 2, 2}, {1+3, 0+3, 1+3, 2+3}, T, PURPLE},
@@ -82,7 +79,7 @@ Tetromino gen_mino() {
 
         while (counter < 7) {
             bool repeat = false; 
-            bag[counter] = rand()%7;
+            bag[counter] = rand() % 7;
             for (size_t i = 0; i < counter; i++) {
                 if (bag[counter] == bag[i] && i != counter) {
                     repeat = true;
@@ -91,7 +88,6 @@ Tetromino gen_mino() {
             if (repeat) {
                 continue;
             } else {
-                printf("RAND:%d\n", bag[counter]);
                 counter++;
             }
         }
@@ -101,7 +97,7 @@ Tetromino gen_mino() {
     return shapes[bag[bagPos]];
 }
 
-void check_mino_bounds() {
+void check_mino_colission() {
     for (size_t i = 0; i < 4; i++) {
         if (mino.y[i] < 0) {
             for (size_t j = 0; j < 4; j++) {
@@ -117,17 +113,16 @@ void check_mino_bounds() {
 
 }
 
-bool check_mino_colission() {
+bool check_place_mino() {
     bool result = false;
     for (size_t i = 0; i < 4; i++) {
-        if (intBoard[mino.x[i]][mino.y[i]] > 0 || mino.x[i] >= ROWS-1) {
+        if (intBoard[mino.x[i]+1][mino.y[i]] > 0 || mino.x[i] >= ROWS-1) {
             result = true;
         }
     }
 
     return result;
 }
-
 
 void place_mino() {
     for (size_t i = 0; i < 4; i++) {
@@ -205,6 +200,7 @@ void render_board(SDL_Renderer *renderer) {
 
     for (size_t i = 0; i < ROWS; i++) {
         for (size_t j = 0; j < COLS; j++) {
+
             if (intBoard[i][j] > 0) {
                 for (size_t k = 0; k < 7; k++) {
                     if (intBoard[i][j] == shapes[k].name) {
@@ -240,37 +236,16 @@ void update_tetromino(u64 frames) {
         minoExist = true;
     }
 
-    check_mino_bounds();
+    check_mino_colission();
     
     if (frames % 23 == 0) {
-        if (check_mino_colission()) {
+        if (check_place_mino()) {
             place_mino();
         } else {
             for (size_t i = 0; i < 4; i++) {
                 mino.x[i]++;        
             }
         }
-    
-
-
-
-/*
-        bool check = false;
-        for (size_t i = 0; i < 4; i++) {
-            if (mino.x[i] >= ROWS-1) {
-                check = true;
-                break;
-            }
-        }
-
-        if (check) {
-            place_mino();
-        } else {
-            for (size_t i = 0; i < 4; i++) {
-                mino.x[i]++;        
-            }
-        }
-        */
     }
         
 }
@@ -300,13 +275,14 @@ void debug_board() {
     for (size_t i = 0; i < ROWS; i++) {
         printf("|");
         for (size_t j = 0; j < COLS; j++) {
-            printf("%c|", charBoard[i][j]);    
+            printf("%d|", intBoard[i][j]);    
         }
-
+/*
         printf("\t|");
         for (size_t k = 0; k < COLS; k++) {
             printf("%d|", intBoard[i][k]);
         }
+*/
         printf("\n");
     }
 
@@ -319,5 +295,15 @@ void debug_mino() {
     for (size_t i = 0; i < 4; i++) {
         printf("%d, %d\n", mino.x[i], mino.y[i]);
     }
+
+}
+
+void debug_bag() {
+    printf("[BAG INFO]\n");
+
+    for (size_t i = 0; i < 7; i++) {
+        printf("BAG: %d\n", bag[i]);    
+    }
+    printf("BAGPOS: %zu\n", bagPos);
 
 }

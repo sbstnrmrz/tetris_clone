@@ -8,9 +8,9 @@
 #include <time.h>
 #include <SDL2/SDL.h>
 
-#define WIN_WIDTH  800
-#define WIN_HEIGHT 600
-#define CELL_SIZE 16
+#define CELL_SIZE 32
+#define WIN_WIDTH  10 * CELL_SIZE
+#define WIN_HEIGHT 20 * CELL_SIZE
 
 typedef int8_t   i8;
 typedef int16_t  i16;
